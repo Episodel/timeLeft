@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React from 'react'
 import styled from 'styled-components'
 import Button from '../../styles/elements/Button'
@@ -7,14 +8,33 @@ interface ITimerProps {
   className?: string
 }
 
+interface IInitialTime {
+  h?: number | null
+  m?: number | null
+  s?: number | null
+}
+
+const initialTime: Array<IInitialTime> = [
+  { h: null, m: 5, s: null },
+  { h: 1, m: 7, s: 50 },
+  { h: null, m: null, s: 10 },
+]
+
 const padTime = (time: number) => {
   return time.toString().padStart(2, '0')
 }
 
+// const timeParse = (time: any) => {
+//   const newTime = Object.fromEntries(
+//     Object.entries(time).map(([k, v]) => [v, k])
+//   )
+
+//   return newTime.5
+// }
+
 const Timer: React.FC<ITimerProps> = ({ className }) => {
-  const [timeLeft, setTimeLeft] = React.useState(5)
-  const [start, setStart] = React.useState(false)
-  const [title, setTitle] = React.useState('')
+  const [timeLeft, setTimeLeft] = React.useState(50)
+  const [isRunning, setIsRunning] = React.useState(false)
   const hours = padTime(Math.floor(timeLeft / 60 / 60))
   const minutes = padTime(Math.floor((timeLeft / 60) % 60))
   const seconds = padTime(Math.floor(timeLeft % 60))
@@ -23,11 +43,12 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
 
   const startTimer = () => {
     if (intervalRef.current !== null) return
-    setStart(true)
-    setTitle('start')
+    setIsRunning(true)
     intervalRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev >= 1) return prev - 1
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        resetTimer()
         return 0
       })
     }, 1000)
@@ -35,26 +56,23 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
 
   const stopTimer = () => {
     if (intervalRef.current === null) return
+
     clearInterval(intervalRef.current)
     intervalRef.current = null
-    setStart(false)
-    setTitle('stop')
+
+    setIsRunning(false)
   }
 
   const resetTimer = () => {
-    setTitle('reset')
     if (intervalRef.current !== null) {
       clearInterval(intervalRef.current)
     }
-    // const intervalRef: React.MutableRefObject<number | null> check this information
-    // clearInterval(intervalRef.current)
     intervalRef.current = null
     setTimeLeft(5)
-    setStart(false)
+    setIsRunning(false)
   }
   return (
     <div className={className}>
-      <h1>{title}</h1>
       <div className="time">
         <span>{hours}</span>
         <span>:</span>
@@ -62,19 +80,22 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
         <span>:</span>
         <span>{seconds}</span>
       </div>
-      <div className="savedTime">
-        <span>5</span>
-        <span>10</span>
-        <span>15</span>
-        <span>1</span>
+      <div className="savedTime buttons">
+        {initialTime.map((item) => (
+          <Button>
+            {`${item.h !== null ? `${item.h} h` : ''} 
+            ${item.m !== null ? `${item.m} m` : ''}
+            ${item.s !== null ? `${item.s} s` : ''}`}
+          </Button>
+        ))}
       </div>
       <div className="buttons">
-        {!start && (
+        {!isRunning && (
           <Button type="button" onClick={startTimer}>
             <Play className="icon" />
           </Button>
         )}
-        {start && (
+        {isRunning && (
           <Button type="button" onClick={stopTimer}>
             <Pause className="icon" />
           </Button>
@@ -92,6 +113,9 @@ export default styled(Timer)`
     color: #ece7e7;
     font-size: 15rem;
     font-family: 'Major Mono Display', monospace;
+    span {
+      text-shadow: #999 1px 1px 5px;
+    }
   }
 
   .buttons {

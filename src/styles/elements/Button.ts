@@ -2,12 +2,12 @@ import styled from 'styled-components'
 
 const Button = styled.button`
   outline: none;
-  width: 70px;
+  min-width: 70px;
   height: 70px;
   border: none;
   font-size: 24px;
   background: transparent;
-  color: #878b32;
+  color: #fff;
   border-radius: 8px;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.6);
   cursor: pointer;
