@@ -22,6 +22,7 @@ const initialTime: Array<IInitialTime> = [
   { h: 0, m: 5, s: 0 },
   { h: 0, m: 7, s: 0 },
   { h: 0, m: 15, s: 0 },
+  { h: 0, m: 20, s: 0 },
   { h: 0, m: 0, s: 3 },
   { h: 1, m: 7, s: 50 },
 ]
@@ -58,7 +59,7 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
   const intervalRef = React.useRef<number | null>(null)
   const intervalTime = React.useRef<number>(0)
 
-  const [play, { stop, isPlaying }] = useSound(sound, { volume: timeVolume })
+  const [play, { stop }] = useSound(sound, { volume: timeVolume })
 
   const startTimer = () => {
     if (intervalRef.current !== null) return
@@ -100,8 +101,6 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
   }
 
   const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log()
-
     setTimeVolume(+e.target.value)
   }
   return (
