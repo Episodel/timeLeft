@@ -49,6 +49,7 @@ const timeParse = (time: any) => {
 
 const Timer: React.FC<ITimerProps> = ({ className }) => {
   const [timeLeft, setTimeLeft] = React.useState(0)
+  const [timeVolume, setTimeVolume] = React.useState(0.01)
   const [isRunning, setIsRunning] = React.useState(false)
   const hours = padTime(Math.floor(timeLeft / 60 / 60))
   const minutes = padTime(Math.floor((timeLeft / 60) % 60))
@@ -57,7 +58,7 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
   const intervalRef = React.useRef<number | null>(null)
   const intervalTime = React.useRef<number>(0)
 
-  const [play, { stop, isPlaying }] = useSound(sound, { volume: 0.1 })
+  const [play, { stop, isPlaying }] = useSound(sound, { volume: timeVolume })
 
   const startTimer = () => {
     if (intervalRef.current !== null) return
@@ -97,6 +98,12 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
     setTimeLeft(intervalTime.current)
     startTimer()
   }
+
+  const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log()
+
+    setTimeVolume(+e.target.value)
+  }
   return (
     <div className={className}>
       <div className="time">
@@ -135,6 +142,13 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
         <Button type="button" onClick={resetTimer}>
           <Stop className="icon" />
         </Button>
+        <input
+          type="range"
+          min="0"
+          max="0.1"
+          step="0.005"
+          onChange={handleVolume}
+        />
       </div>
     </div>
   )
