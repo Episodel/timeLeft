@@ -20,8 +20,10 @@ interface IInitialTime {
 
 const initialTime: Array<IInitialTime> = [
   { h: 0, m: 5, s: 0 },
+  { h: 0, m: 7, s: 0 },
+  { h: 0, m: 15, s: 0 },
+  { h: 0, m: 0, s: 3 },
   { h: 1, m: 7, s: 50 },
-  { h: 0, m: 0, s: 10 },
 ]
 
 const padTime = (time: number) => {
@@ -46,7 +48,7 @@ const timeParse = (time: any) => {
 }
 
 const Timer: React.FC<ITimerProps> = ({ className }) => {
-  const [timeLeft, setTimeLeft] = React.useState(50)
+  const [timeLeft, setTimeLeft] = React.useState(0)
   const [isRunning, setIsRunning] = React.useState(false)
   const hours = padTime(Math.floor(timeLeft / 60 / 60))
   const minutes = padTime(Math.floor((timeLeft / 60) % 60))
@@ -54,6 +56,8 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
 
   const intervalRef = React.useRef<number | null>(null)
   const intervalTime = React.useRef<number>(0)
+
+  const [play, { stop, isPlaying }] = useSound(sound, { volume: 0.1 })
 
   const startTimer = () => {
     if (intervalRef.current !== null) return
@@ -63,6 +67,7 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
         if (prev >= 1) return prev - 1
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
         resetTimer()
+        play()
         return 0
       })
     }, 1000)
@@ -82,11 +87,13 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
     intervalRef.current = null
     setTimeLeft(intervalTime.current)
     setIsRunning(false)
+    stop()
   }
 
   const handleSavedTime = (index: number) => {
     const setTime = initialTime.find((item, i) => i === index)
     intervalTime.current = timeParse(setTime)
+    stop()
     setTimeLeft(intervalTime.current)
     startTimer()
   }
@@ -128,23 +135,8 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
         <Button type="button" onClick={resetTimer}>
           <Stop className="icon" />
         </Button>
-        <FanfareButton />
       </div>
     </div>
-  )
-}
-
-const FanfareButton = () => {
-  const [play] = useSound(sound, { volume: 0.25 })
-
-  const handleClick = () => {
-    play()
-  }
-
-  return (
-    <>
-      <button type="button" onClick={handleClick} />
-    </>
   )
 }
 
