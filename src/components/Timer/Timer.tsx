@@ -1,6 +1,10 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable array-callback-return */
 import React from 'react'
 import styled from 'styled-components'
+import useSound from 'use-sound'
+import sound from '../../sounds/clock.mp3'
 import Button from '../../styles/elements/Button'
 import { Stop, Play, Pause } from '../icon'
 
@@ -124,8 +128,23 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
         <Button type="button" onClick={resetTimer}>
           <Stop className="icon" />
         </Button>
+        <FanfareButton />
       </div>
     </div>
+  )
+}
+
+const FanfareButton = () => {
+  const [play] = useSound(sound, { volume: 0.25 })
+
+  const handleClick = () => {
+    play()
+  }
+
+  return (
+    <>
+      <button type="button" onClick={handleClick} />
+    </>
   )
 }
 
