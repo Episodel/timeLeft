@@ -6,16 +6,15 @@ import styled from 'styled-components'
 import useSound from 'use-sound'
 import sound from '../../sounds/clock.mp3'
 import Button from '../../styles/elements/Button'
+import { padTime } from '../../utils/padTime'
+import { timeParse } from '../../utils/timeParse'
+import AddTime from '../AddTime'
+import SaveTime from '../SavedTime'
 import { Stop, Play, Pause } from '../icon'
+import { IInitialTime } from './interface'
 
 interface ITimerProps {
   className?: string
-}
-
-interface IInitialTime {
-  h: number | string
-  m: number | string
-  s: number | string
 }
 
 const initialTime: Array<IInitialTime> = [
@@ -27,37 +26,16 @@ const initialTime: Array<IInitialTime> = [
   { h: 1, m: 7, s: 50 },
 ]
 
-const padTime = (time: number) => {
-  return time.toString().padStart(2, '0')
-}
-
-const timeParse = (time: any) => {
-  let setTime = 0
-  Object.entries(time).forEach(([key, value]: any) => {
-    if (key === 'h') {
-      setTime += value * 3600
-    }
-    if (key === 'm') {
-      setTime += value * 60
-    }
-    if (key === 's') {
-      setTime += value
-    }
-  })
-
-  return setTime
-}
-
 const Timer: React.FC<ITimerProps> = ({ className }) => {
   const [timeLeft, setTimeLeft] = React.useState(0)
-  const [timeVolume, setTimeVolume] = React.useState(0.01)
+  const [timeVolume, setTimeVolume] = React.useState(0.02)
   const [isRunning, setIsRunning] = React.useState(false)
   const hours = padTime(Math.floor(timeLeft / 60 / 60))
   const minutes = padTime(Math.floor((timeLeft / 60) % 60))
   const seconds = padTime(Math.floor(timeLeft % 60))
 
   const intervalRef = React.useRef<number | null>(null)
-  const intervalTime = React.useRef<number>(0)
+  const chosenTime = React.useRef<number>(0)
 
   const [play, { stop }] = useSound(sound, { volume: timeVolume })
 
@@ -87,16 +65,18 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
       clearInterval(intervalRef.current)
     }
     intervalRef.current = null
-    setTimeLeft(intervalTime.current)
+    setTimeLeft(chosenTime.current)
     setIsRunning(false)
     stop()
   }
 
-  const handleSavedTime = (index: number) => {
+  const handleChosenTime = (index: number) => {
     const setTime = initialTime.find((item, i) => i === index)
-    intervalTime.current = timeParse(setTime)
+    if (setTime !== undefined) {
+      chosenTime.current = timeParse(setTime)
+    }
     stop()
-    setTimeLeft(intervalTime.current)
+    setTimeLeft(chosenTime.current)
     startTimer()
   }
 
@@ -114,16 +94,11 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
       </div>
       {initialTime && (
         <div className="savedTime">
-          <h2 className="timeTitle">Save time</h2>
           <div className="buttons">
-            {initialTime.map((item, i) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <Button key={i} onClick={() => handleSavedTime(i)}>
-                {`${item.h !== 0 ? `${item.h} h` : ''} 
-            ${item.m !== 0 ? `${item.m} m` : ''}
-            ${item.s !== 0 ? `${item.s} s` : ''}`}
-              </Button>
-            ))}
+            <SaveTime
+              handleChosenTime={handleChosenTime}
+              initialTime={initialTime}
+            />
           </div>
         </div>
       )}
@@ -146,9 +121,11 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
           min="0"
           max="0.1"
           step="0.005"
+          value={timeVolume}
           onChange={handleVolume}
         />
       </div>
+      <AddTime />
     </div>
   )
 }
