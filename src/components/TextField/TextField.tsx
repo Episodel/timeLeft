@@ -1,16 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { color } from '../../styles/Colors'
-
-const { link } = color
 const Input = styled.input`
   border: 2px solid grey;
   margin-top: 20px;
   padding: 10px;
   font-size: 2rem;
   border-radius: 10px;
-  color: ${link};
+  width: 100px;
 
   &:focus {
     outline: transparent;
@@ -23,11 +20,12 @@ interface ITextField {
   placeholder?: string
   value?: string | number
   name: string
+  id?: string
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const TextField: React.FC<ITextField> = (props) => {
-  const { placeholder, value, type, onChange, name } = props
+  const { placeholder, value, type, onChange, name, id } = props
 
   return (
     <Input
@@ -36,6 +34,7 @@ const TextField: React.FC<ITextField> = (props) => {
       type={type}
       onChange={onChange}
       name={name}
+      id={id}
     />
   )
 }

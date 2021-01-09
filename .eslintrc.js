@@ -36,12 +36,19 @@ module.exports = {
       'error',
       { props: true, ignorePropertyModificationsFor: ['draft'] },
     ],
-    'jsx-a11y/label-has-for': [
-      2,
+    'jsx-a11y/label-has-associated-control': [
+      'error',
       {
-        components: ['Label'],
         required: {
-          every: ['nesting', 'id'],
+          some: ['nesting', 'id'],
+        },
+      },
+    ],
+    'jsx-a11y/label-has-for': [
+      'error',
+      {
+        required: {
+          some: ['nesting', 'id'],
         },
       },
     ],
