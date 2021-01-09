@@ -21,6 +21,7 @@ const initialTime: Array<IInitialTime> = [
   { h: 0, m: 5, s: 0 },
   { h: 0, m: 7, s: 0 },
   { h: 0, m: 15, s: 0 },
+  { h: 0, m: 20, s: 0 },
   { h: 0, m: 0, s: 3 },
   { h: 1, m: 7, s: 50 },
 ]
