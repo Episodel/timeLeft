@@ -24,17 +24,23 @@ const GlobalStyle = createGlobalStyle`
   input[type='number'] {
     -moz-appearance: textfield;
     appearance: textfield;
-    margin: 0;
+
   }
 
   input[type='number']::-webkit-inner-spin-button,
   input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
-    margin: 0;
+
   }
 
   button:disabled {
     color: silver;
+  }
+
+  label {
+    font-size: 2rem;
+    color: #fff;
+    margin-right: 10px
   }
 `
 

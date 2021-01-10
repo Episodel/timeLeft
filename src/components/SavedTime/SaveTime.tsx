@@ -21,6 +21,7 @@ const SaveTime: React.FC<SavedTime> = (props) => {
             ${item.s !== 0 ? `${item.s} s` : ''}`}
           </Button>
         ))}
+        <Button type="button">Add / Delete time</Button>
       </div>
     </div>
   )
