@@ -17,19 +17,28 @@ interface ITimerProps {
   className?: string
 }
 
-const initialTime: Array<IInitialTime> = [
-  { h: 0, m: 5, s: 0 },
-  { h: 0, m: 7, s: 0 },
-  { h: 0, m: 15, s: 0 },
-  { h: 0, m: 20, s: 0 },
-  { h: 0, m: 0, s: 3 },
-  { h: 1, m: 7, s: 50 },
-]
+// const initialTime: Array<IInitialTime> = [
+//   // { h: 0, m: 5, s: 0 },
+//   // { h: 0, m: 7, s: 0 },
+//   // { h: 0, m: 15, s: 0 },
+//   // { h: 0, m: 20, s: 0 },
+//   { h: 0, m: 0, s: 3 },
+//   // { h: 1, m: 7, s: 50 },
+// ]
 
 const Timer: React.FC<ITimerProps> = ({ className }) => {
   const [timeLeft, setTimeLeft] = React.useState(0)
   const [timeVolume, setTimeVolume] = React.useState(0.02)
   const [isRunning, setIsRunning] = React.useState(false)
+  const [formData, setFormData] = React.useState<IInitialTime>({
+    h: 0,
+    m: 0,
+    s: 0,
+  })
+  const [initialTime, setInitialTime] = React.useState<IInitialTime[]>([
+    { h: 0, m: 0, s: 3 },
+    { h: 0, m: 0, s: 5 },
+  ])
   const hours = padTime(Math.floor(timeLeft / 60 / 60))
   const minutes = padTime(Math.floor((timeLeft / 60) % 60))
   const seconds = padTime(Math.floor(timeLeft % 60))
@@ -83,6 +92,17 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
   const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTimeVolume(+e.target.value)
   }
+
+  const handleForm = (e: any) => {
+    e.preventDefault()
+
+    const isTrue = true
+    // const isTrue = Object.values(formData).some((v) => v !== 0)
+    if (isTrue) {
+      const newArr = [...initialTime, formData]
+      setInitialTime(newArr)
+    }
+  }
   return (
     <div className={className}>
       <div className="time">
@@ -125,7 +145,11 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
           onChange={handleVolume}
         />
       </div>
-      <AddTime />
+      <AddTime
+        formData={formData}
+        setFormData={setFormData}
+        handleForm={handleForm}
+      />
     </div>
   )
 }

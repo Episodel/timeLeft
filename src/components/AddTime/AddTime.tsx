@@ -2,16 +2,54 @@ import React from 'react'
 import Button from '../../styles/elements/Button'
 import TextField from '../TextField'
 
-const AddTime: React.FC = () => {
+const AddTime: React.FC<any> = (props) => {
+  const { formData, setFormData, handleForm } = props
+  const [btnDisabled, setBtnDisabled] = React.useState(true)
+
+  const handleInput = (e: any) => {
+    if (e.target.value !== '') {
+      setBtnDisabled(false)
+      setFormData({
+        ...formData,
+        [e.target.name]: +e.target.value,
+      })
+    }
+  }
   return (
-    <form>
+    <form onSubmit={handleForm}>
       <label htmlFor="hour">
-        <TextField id="hour" type="number" name="hour" placeholder="0" />
+        <TextField
+          id="hour"
+          type="number"
+          name="h"
+          placeholder="0"
+          onChange={handleInput}
+        />
         Hours
       </label>
-      <input type="number" />
-      <input type="number" />
-      <Button>Add</Button>
+      <label htmlFor="minutes">
+        <TextField
+          id="minutes"
+          type="number"
+          name="m"
+          placeholder="0"
+          onChange={handleInput}
+        />
+        minutes
+      </label>
+      <label htmlFor="seconds">
+        <TextField
+          id="seconds"
+          type="number"
+          name="s"
+          placeholder="0"
+          onChange={handleInput}
+        />
+        seconds
+      </label>
+      <Button type="submit" disabled={btnDisabled}>
+        Save
+      </Button>
     </form>
   )
 }
