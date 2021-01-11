@@ -2,12 +2,12 @@ import React from 'react'
 import Button from '../../styles/elements/Button'
 import { IInitialTime } from '../Timer/interface'
 
-interface SavedTime {
+interface ISaveTime {
   initialTime: Array<IInitialTime>
   handleChosenTime: (i: number) => void
 }
 
-const SaveTime: React.FC<SavedTime> = (props) => {
+const SaveTime: React.FC<ISaveTime> = (props) => {
   const { initialTime, handleChosenTime } = props
   return (
     <div>
@@ -21,7 +21,7 @@ const SaveTime: React.FC<SavedTime> = (props) => {
             ${item.s !== 0 ? `${item.s} s` : ''}`}
           </Button>
         ))}
-        <Button type="button">Add / Delete time</Button>
+        {/* <Button type="button">Add</Button> */}
       </div>
     </div>
   )

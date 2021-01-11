@@ -6,12 +6,12 @@ import styled from 'styled-components'
 import useSound from 'use-sound'
 import sound from '../../sounds/clock.mp3'
 import Button from '../../styles/elements/Button'
-import { padTime } from '../../utils/padTime'
 import { timeParse } from '../../utils/timeParse'
 import AddTime from '../AddTime'
 import SaveTime from '../SavedTime'
 import { Stop, Play, Pause } from '../icon'
 import { IInitialTime } from './interface'
+import Time from '../Time'
 
 interface ITimerProps {
   className?: string
@@ -21,21 +21,17 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
   const [timeLeft, setTimeLeft] = React.useState(0)
   const [timeVolume, setTimeVolume] = React.useState(0.02)
   const [isRunning, setIsRunning] = React.useState(false)
+  const [initialTime, setInitialTime] = React.useState<IInitialTime[]>([])
+  const [btnDisabled, setBtnDisabled] = React.useState(true)
   const [formData, setFormData] = React.useState<IInitialTime>({
     h: 0,
     m: 0,
     s: 0,
   })
-  const [initialTime, setInitialTime] = React.useState<IInitialTime[]>([
-    { h: 0, m: 0, s: 3 },
-    { h: 0, m: 0, s: 5 },
-  ])
-  const hours = padTime(Math.floor(timeLeft / 60 / 60))
-  const minutes = padTime(Math.floor((timeLeft / 60) % 60))
-  const seconds = padTime(Math.floor(timeLeft % 60))
 
   const intervalRef = React.useRef<number | null>(null)
   const chosenTime = React.useRef<number>(0)
+  const clearForm = React.useRef<HTMLFormElement>(null)
 
   const [play, { stop }] = useSound(sound, { volume: timeVolume })
 
@@ -75,9 +71,9 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
     if (setTime !== undefined) {
       chosenTime.current = timeParse(setTime)
     }
-    stop()
     setTimeLeft(chosenTime.current)
     startTimer()
+    stop()
   }
 
   const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,23 +82,17 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
 
   const handleForm = (e: any) => {
     e.preventDefault()
-
-    const isTrue = true
-    // const isTrue = Object.values(formData).some((v) => v !== 0)
+    if (clearForm.current !== null) clearForm.current.reset()
+    const isTrue = Object.values(formData).some((v) => v !== 0)
     if (isTrue) {
       const newArr = [...initialTime, formData]
       setInitialTime(newArr)
+      setBtnDisabled(true)
     }
   }
   return (
     <div className={className}>
-      <div className="time">
-        <span>{hours}</span>
-        <span>:</span>
-        <span>{minutes}</span>
-        <span>:</span>
-        <span>{seconds}</span>
-      </div>
+      <Time timeLeft={timeLeft} />
       {initialTime && (
         <div className="savedTime">
           <div className="buttons">
@@ -140,6 +130,9 @@ const Timer: React.FC<ITimerProps> = ({ className }) => {
         formData={formData}
         setFormData={setFormData}
         handleForm={handleForm}
+        clearForm={clearForm}
+        btnDisabled={btnDisabled}
+        setBtnDisabled={setBtnDisabled}
       />
     </div>
   )
